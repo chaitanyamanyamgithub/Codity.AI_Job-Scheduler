@@ -308,7 +308,7 @@ When a job inside a batch finishes, `updateBatchProgress` atomically updates `co
 
 ---
 
-# 4. Reliability & Concurrency (15 / 15 Marks)
+# 4. Reliability & Concurrency
 
 ### 4.1 Atomic Job Claiming & Deadlock Prevention
 To guarantee zero double-claiming and prevent database deadlocks under high worker concurrency:
