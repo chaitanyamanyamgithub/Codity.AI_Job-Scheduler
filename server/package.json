@@ -1,0 +1,46 @@
+{
+  "name": "distributed-job-scheduler-server",
+  "version": "1.0.0",
+  "description": "Distributed Job Scheduler — API Server & Worker",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "worker": "tsx src/worker.entrypoint.ts",
+    "migrate": "tsx src/db/migrate.ts",
+    "test": "jest --forceExit --detectOpenHandles",
+    "test:unit": "jest --testPathPattern=unit --forceExit",
+    "test:integration": "jest --testPathPattern=integration --forceExit --detectOpenHandles",
+    "test:concurrency": "jest --testPathPattern=concurrency --forceExit --detectOpenHandles",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "cron-parser": "^4.9.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.0",
+    "pino": "^9.4.0",
+    "pino-pretty": "^11.2.0",
+    "uuid": "^10.0.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.13",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^22.5.0",
+    "@types/pg": "^8.11.10",
+    "@types/supertest": "^6.0.2",
+    "@types/uuid": "^10.0.0",
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.5",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.2"
+  }
+}

@@ -1,0 +1,80 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: job_scheduler_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-scheduler}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-scheduler_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-job_scheduler}
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER:-scheduler} -d $${POSTGRES_DB:-job_scheduler}']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: job_scheduler_api
+    ports:
+      - '3000:3000'
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgres://scheduler:scheduler_secret@postgres:5432/job_scheduler}
+      JWT_SECRET: ${JWT_SECRET:-super_secret_jwt_key_change_in_production}
+      PORT: ${PORT:-3000}
+      NODE_ENV: ${NODE_ENV:-development}
+      WORKER_POLL_INTERVAL_MS: ${WORKER_POLL_INTERVAL_MS:-500}
+      WORKER_HEARTBEAT_INTERVAL_MS: ${WORKER_HEARTBEAT_INTERVAL_MS:-5000}
+      WORKER_STALE_THRESHOLD_MS: ${WORKER_STALE_THRESHOLD_MS:-30000}
+      SCHEDULER_TICK_INTERVAL_MS: ${SCHEDULER_TICK_INTERVAL_MS:-3000}
+      RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS:-60000}
+      RATE_LIMIT_READ_REQUESTS: ${RATE_LIMIT_READ_REQUESTS:-120}
+      RATE_LIMIT_MUTATION_REQUESTS: ${RATE_LIMIT_MUTATION_REQUESTS:-60}
+      RUN_MIGRATIONS: 'true'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: npx tsx src/server.ts
+
+  worker:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: job_scheduler_worker
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgres://scheduler:scheduler_secret@postgres:5432/job_scheduler}
+      JWT_SECRET: ${JWT_SECRET:-super_secret_jwt_key_change_in_production}
+      NODE_ENV: ${NODE_ENV:-development}
+      WORKER_POLL_INTERVAL_MS: ${WORKER_POLL_INTERVAL_MS:-500}
+      WORKER_MAX_PARALLEL_JOBS: ${WORKER_MAX_PARALLEL_JOBS:-5}
+      WORKER_NAME: ${WORKER_NAME:-worker-1}
+      WORKER_SHARD_KEY: ${WORKER_SHARD_KEY:-default}
+      WORKER_HEARTBEAT_INTERVAL_MS: ${WORKER_HEARTBEAT_INTERVAL_MS:-5000}
+      WORKER_SHUTDOWN_TIMEOUT_MS: ${WORKER_SHUTDOWN_TIMEOUT_MS:-30000}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      api:
+        condition: service_started
+    command: npx tsx src/worker.entrypoint.ts
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: job_scheduler_client
+    ports:
+      - '5173:5173'
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:3000}
+    depends_on:
+      - api
+    command: npm run dev -- --host 0.0.0.0
+
+volumes:
+  pgdata:
