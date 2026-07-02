@@ -12,22 +12,9 @@ This report provides a detailed technical breakdown of the codebase, covering sy
 
 ---
 
-## 📊 Summary Matrix vs Evaluation Criteria
 
-| Evaluation Criteria | Allocated Marks | Core Implementation Highlights |
-| :--- | :---: | :--- |
-| **1. System Architecture** | **20** | Decoupled API Gateway, Background Workers, PostgreSQL state engine, WebSocket live feed, distributed scheduler lock. |
-| **2. Database Design** | **20** | 14 normalized tables, foreign key integrity, pgcrypto UUIDs, and performance indexes powering atomic claims & idempotency. |
-| **3. Backend Engineering** | **20** | TypeScript, Zod schema validation, pluggable task handlers (HTTP Webhooks, Shell Commands, Simulated), and Batch Webhook callbacks. |
-| **4. Reliability & Concurrency** | **15** | `SELECT FOR UPDATE SKIP LOCKED` atomic claims, sorted queue locking to prevent deadlocks, backoff retries + jitter, DLQ, and graceful worker shutdown. |
-| **5. Frontend & UX** | **10** | React + Tailwind dashboard, live WebSocket event stream, Batches tab with progress bars, Task handler selector modal, and Recharts metrics. |
-| **6. API Design** | **5** | RESTful route hierarchy, standardized JSON data envelopes, structured error formats, and paginated list endpoints. |
-| **7. Documentation** | **5** | Comprehensive Markdown docs (`README.md`, `architecture.md`, `er-diagram.md`, `api-spec.md`, `design-decisions.md`). |
-| **8. Testing** | **5** | Unit, Integration, and Concurrency test suites verifying atomic claims and zero double-claiming under race conditions. |
 
----
-
-# 1. System Architecture (20 / 20 Marks)
+# 1. System Architecture
 
 ### 1.1 Architectural Overview
 The application is structured around four separate, independent components:
@@ -84,7 +71,7 @@ To allow multiple API instances to run safely behind a load balancer without tri
 
 ---
 
-# 2. Database Design (20 / 20 Marks)
+# 2. Database Design
 
 ### 2.1 Entity Relationship Diagram
 
@@ -282,7 +269,7 @@ The database consists of 14 normalized tables:
 
 ---
 
-# 3. Backend Engineering (20 / 20 Marks)
+# 3. Backend Engineering
 
 ### 3.1 Technology Stack
 - **Node.js + Express** with TypeScript in strict mode.
@@ -360,7 +347,7 @@ When a job attempt fails:
 
 ---
 
-# Section 5: Frontend & UX (10 / 10 Marks)
+# Section 5: Frontend & UX
 
 ### 5.1 Modern Web Control Plane & Observability Dashboard
 Built using **React (Vite)**, **Tailwind CSS v3**, **Recharts**, and **Lucide Icons**:
@@ -378,7 +365,7 @@ Built using **React (Vite)**, **Tailwind CSS v3**, **Recharts**, and **Lucide Ic
 
 ---
 
-# 6. API Design (5 / 5 Marks)
+# 6. API Design
 
 ### 6.1 RESTful Route Structure
 
@@ -419,7 +406,7 @@ Built using **React (Vite)**, **Tailwind CSS v3**, **Recharts**, and **Lucide Ic
 
 ---
 
-# 7. Documentation (5 / 5 Marks)
+# 7. Documentation
 
 The repository includes five technical Markdown documents in `docs/`:
 1. `README.md`: Single-command startup (`docker-compose up --build`), environment variables, and test instructions.
@@ -430,7 +417,7 @@ The repository includes five technical Markdown documents in `docs/`:
 
 ---
 
-# 8. Testing & Quality Assurance (5 / 5 Marks)
+# 8. Testing & Quality Assurance
 
 ### 8.1 Automated Test Suites
 Built using **Jest** and **Supertest**:
