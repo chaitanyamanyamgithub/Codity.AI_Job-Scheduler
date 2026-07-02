@@ -1,18 +1,4 @@
-# Distributed Job Scheduler — Engineering Project Report
-
----
-
-## 📌 Project Overview & Submission Info
-
-- **Project Title**: Distributed Job Scheduler (Production-Grade Async Task Platform)
-- **Primary Tech Stack**: Node.js, TypeScript, Express, PostgreSQL, React (Vite + Tailwind CSS)
-- **Target Evaluation Marks**: 100 / 100 Marks
-
-This report provides a detailed technical breakdown of the codebase, covering system architecture, database schema, concurrency handling, backend execution handlers, frontend UX, API design, documentation, and automated testing.
-
----
-
-
+# Distributed Job Scheduler —
 
 # 1. System Architecture
 
